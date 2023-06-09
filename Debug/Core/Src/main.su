@@ -1,5 +1,6 @@
-../Core/Src/main.c:69:6:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/main.c:95:6:CAN_Send	4	static
-../Core/Src/main.c:131:5:main	8	static
-../Core/Src/main.c:185:6:SystemClock_Config	96	static
-../Core/Src/main.c:234:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:68:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/main.c:85:7:HAL_CAN_RxFifo0MsgPendingCallback	24	static
+../Core/Src/main.c:97:6:CAN_Send	8	static
+../Core/Src/main.c:135:5:main	8	static
+../Core/Src/main.c:186:6:SystemClock_Config	96	static
+../Core/Src/main.c:235:6:Error_Handler	4	static,ignoring_inline_asm

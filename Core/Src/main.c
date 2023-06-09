@@ -71,32 +71,36 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
 	  cnt1kHz = (cnt1kHz + 1) % 1000;
 
-    if (cnt1kHz == 0)
-    {
-    	Write_GPIO(USER_LED, GPIO_PIN_SET);
-    }
-    else
-    {
-    	Write_GPIO(USER_LED, GPIO_PIN_RESET);
-    }
+//    if (cnt1kHz == 0)
+//    {
+//    	Write_GPIO(USER_LED, GPIO_PIN_SET);
+//    }
+//    else
+//    {
+//    	Write_GPIO(USER_LED, GPIO_PIN_RESET);
+//    }
   }
 }
 
-// void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
-//{
-//   if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
-//   {
-//     Error_Handler();
-//   }
-//   printf(" id=%d [0]=%d [1]=%d [2]=%d\r\n", RxHeader.StdId, RxData[0], RxData[1], RxData[2]);
-// }
+ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+   if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
+   {
+     Error_Handler();
+   }
+//	 HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData);
+   printf(" id=%d [0]=%d [1]=%d [2]=%d\r\n", RxHeader.StdId, RxData[0], RxData[1], RxData[2]);
+   Toggle_GPIO(USER_LED);
+ }
 
 uint8_t cnt = 0;
 void CAN_Send(){
+			HAL_Delay(100);
+
 		    // F303K8(1)
-	        TxHeader.StdId = 0x123;
+//	        TxHeader.StdId = 0x123;
 	        // F303K8(2)
-	        // TxHeader.StdId = 0x456;
+	        TxHeader.StdId = 0x456;
 	        TxHeader.RTR = CAN_RTR_DATA;
 	        TxHeader.IDE = CAN_ID_STD;
 	        TxHeader.DLC = 3;
@@ -157,11 +161,8 @@ int main(void)
   MX_CAN_Init();
   /* USER CODE BEGIN 2 */
   HAL_CAN_Start(&hcan);
-  /******error!!******/
-//  if (HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)
-//  {
-//    Error_Handler();
-//  }
+  HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
+
   HAL_TIM_Base_Start_IT(&htim1);
   Write_GPIO(USER_LED, GPIO_PIN_SET);
   /* USER CODE END 2 */
