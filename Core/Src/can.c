@@ -41,8 +41,8 @@ void MX_CAN_Init(void)
   hcan.Init.Prescaler = 3;
   hcan.Init.Mode = CAN_MODE_NORMAL;
   hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan.Init.TimeSeg1 = CAN_BS1_6TQ;
-  hcan.Init.TimeSeg2 = CAN_BS2_1TQ;
+  hcan.Init.TimeSeg1 = CAN_BS1_12TQ;
+  hcan.Init.TimeSeg2 = CAN_BS2_3TQ;
   hcan.Init.TimeTriggeredMode = DISABLE;
   hcan.Init.AutoBusOff = DISABLE;
   hcan.Init.AutoWakeUp = DISABLE;
@@ -60,15 +60,15 @@ void MX_CAN_Init(void)
    sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
 
   // // F303K8(1)
-//   sFilterConfig.FilterIdHigh = 0x456 << 5;
-//   sFilterConfig.FilterIdLow = 0x456 << 5;
-//   sFilterConfig.FilterMaskIdHigh = 0x456 << 5;
-//   sFilterConfig.FilterMaskIdLow = 0x456 << 5;
+   sFilterConfig.FilterIdHigh = 0x456 << 5;
+   sFilterConfig.FilterIdLow = 0x456 << 5;
+   sFilterConfig.FilterMaskIdHigh = 0x456 << 5;
+   sFilterConfig.FilterMaskIdLow = 0x456 << 5;
   // // F303K8(2)
-   sFilterConfig.FilterIdHigh = 0x123 << 5;
-   sFilterConfig.FilterIdLow = 0x123 << 5;
-   sFilterConfig.FilterMaskIdHigh = 0x123 << 5;
-   sFilterConfig.FilterMaskIdLow = 0x123 << 5;
+//   sFilterConfig.FilterIdHigh = 0x123 << 5;
+//   sFilterConfig.FilterIdLow = 0x123 << 5;
+//   sFilterConfig.FilterMaskIdHigh = 0x123 << 5;
+//   sFilterConfig.FilterMaskIdLow = 0x123 << 5;
 
    sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
    sFilterConfig.FilterActivation = ENABLE;
@@ -110,8 +110,6 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
     /* CAN interrupt Init */
     HAL_NVIC_SetPriority(CAN_RX0_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(CAN_RX0_IRQn);
-    HAL_NVIC_SetPriority(CAN_RX1_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(CAN_RX1_IRQn);
   /* USER CODE BEGIN CAN_MspInit 1 */
 
   /* USER CODE END CAN_MspInit 1 */
@@ -137,7 +135,6 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
 
     /* CAN interrupt Deinit */
     HAL_NVIC_DisableIRQ(CAN_RX0_IRQn);
-    HAL_NVIC_DisableIRQ(CAN_RX1_IRQn);
   /* USER CODE BEGIN CAN_MspDeInit 1 */
 
   /* USER CODE END CAN_MspDeInit 1 */

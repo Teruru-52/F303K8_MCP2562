@@ -84,37 +84,42 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
  void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-   if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
+   if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
    {
      Error_Handler();
    }
 //	 HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData);
-   printf(" id=%d [0]=%d [1]=%d [2]=%d\r\n", RxHeader.StdId, RxData[0], RxData[1], RxData[2]);
+   printf("id=%d [0]=%d [1]=%d [2]=%d\r\n", RxHeader.StdId, RxData[0], RxData[1], RxData[2]);
    Toggle_GPIO(USER_LED);
  }
 
 uint8_t cnt = 0;
 void CAN_Send(){
+//			Toggle_GPIO(USER_LED);
 			HAL_Delay(100);
 
 		    // F303K8(1)
-//	        TxHeader.StdId = 0x123;
+	        TxHeader.StdId = 0x123;
 	        // F303K8(2)
-	        TxHeader.StdId = 0x456;
+//	        TxHeader.StdId = 0x456;
 	        TxHeader.RTR = CAN_RTR_DATA;
 	        TxHeader.IDE = CAN_ID_STD;
-	        TxHeader.DLC = 3;
+	        TxHeader.DLC = 8;
 	        TxHeader.TransmitGlobalTime = DISABLE;
 	        TxData[0] = 100;
 	        TxData[1] = 200;
 	        TxData[2] = cnt;
 
-	        if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
-	        {
-	          Error_Handler();
-	        }
-	        while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan) != 3)
-	        {
+//	        if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
+//	        {
+//	          Error_Handler();
+//	        }
+//	        while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan) != 3)
+//	        {
+//	        }
+
+	        if(0 < HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
+	            HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox);
 	        }
 
 	        if (cnt > 250)
@@ -161,7 +166,9 @@ int main(void)
   MX_CAN_Init();
   /* USER CODE BEGIN 2 */
   HAL_CAN_Start(&hcan);
-  HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
+  if(HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK){
+	  Error_Handler();
+  }
 
   HAL_TIM_Base_Start_IT(&htim1);
   Write_GPIO(USER_LED, GPIO_PIN_SET);
@@ -171,7 +178,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  CAN_Send();
+	  CAN_Send();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
